@@ -34,10 +34,11 @@ if TargetValidation(&amp;quot;target&amp;quot;,PQ_SWP) and isMindControledUnit(&
 	if npcID == 60885 then return false end
 	if npcID == 62919 then return false end
 	
+	-- Stop Ability execution
 	if PQR_IsMoving(0.3) then
 		if select(3,Hysteria_UnitInfo(&amp;quot;player&amp;quot;)) &amp;lt; 45 then return false else return true end
 	end
-	
+	if IsPlayerSpell(PQ_SWI) and UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP) then return false end
 	if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
 	
 	if SWP then
@@ -54,11 +55,13 @@ local PQ_SWI = PQ_SWI
 local TargetValidation = TargetValidation
 local isMindControledUnit = isMindControledUnit
 
-if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
-
 if TargetValidation(&amp;quot;mouseover&amp;quot;,PQ_SWP) and isMindControledUnit(&amp;quot;mouseover&amp;quot;) then
 	local SWP,_,_,_,_,_,SWPtimer = UnitDebuffID(&amp;quot;mouseover&amp;quot;,PQ_SWP,&amp;quot;PLAYER&amp;quot;)
 	local npcID = tonumber(UnitGUID(&amp;quot;mouseover&amp;quot;):sub(6,10), 16)
+	
+	-- Stop Ability execution
+	if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
+	if IsPlayerSpell(PQ_SWI) and UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP) then return false end
 	
 	-- Don&amp;apos;t dot these targets
 	if npcID == 60885 then return false end
@@ -85,6 +88,7 @@ if TargetValidation(&amp;quot;target&amp;quot;,PQ_VT) and isMindControledUnit(&a
 	-- Don&amp;apos;t cast if we&amp;apos;re moving.
 	if PQR_IsMoving(0.3) then return false end
 	if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
+	if IsPlayerSpell(PQ_SWI) and UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP) then return false end
 	
 	if VT then
 		for i=1,#PQ_TempTable do
@@ -102,12 +106,14 @@ local isMindControledUnit = isMindControledUnit
 if TargetValidation(&amp;quot;mouseover&amp;quot;,PQ_VT) and isMindControledUnit(&amp;quot;mouseover&amp;quot;) then
 	local VT,_,_,_,_,_,VTtimer = UnitDebuffID(&amp;quot;mouseover&amp;quot;,PQ_VT,&amp;quot;PLAYER&amp;quot;)
 	local npcID = tonumber(UnitGUID(&amp;quot;mouseover&amp;quot;):sub(6,10), 16)
-	if npcID == 60885 or npcID == 63346 then return false end
 	
+	-- Don&amp;apos;t DoT these targets
+	if npcID == 60885 or npcID == 63346 then return false end
 	
 	-- Don&amp;apos;t cast if we&amp;apos;re moving.
 	if PQR_IsMoving(0.3) then return false end
 	if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
+	if IsPlayerSpell(PQ_SWI) and UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP) then return false end
 	
 	if VT then
 		if VTtimer - GetTime() &amp;lt;= 4 then return true end
@@ -556,4 +562,19 @@ for i=1,#PQ_Lifeblood do
 			end
 		end
 	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>
+end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (Insanity)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_DP = PQ_DP
+local PQ_MF = PQ_MF
+local Hysteria_Spells = Hysteria_Spell
+
+if PQR_IsMoving(0.3) then return false end
+if not IsPlayerSpell(PQ_SWI) then return false end
+if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
+
+if Hysteria_Spells[PQ_MF].known
+	and UnitExists(&amp;quot;target&amp;quot;)
+	and PQR_SpellAvailable(PQ_MF)
+	and UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP)
+	and UnitCanAttack(&amp;quot;player&amp;quot;, &amp;quot;target&amp;quot;) == 1
+	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
+	and not PQR_IsOutOfSight(&amp;quot;target&amp;quot;, 1)
+then CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;) end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>
