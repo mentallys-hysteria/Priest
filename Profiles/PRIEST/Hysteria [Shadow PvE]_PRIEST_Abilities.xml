@@ -122,15 +122,13 @@ end</Lua><RecastDelay>500</RecastDelay><Target>Target</Target><CancelChannel>Tru
 local SCD = SCD
 local TargetValidation = TargetValidation
 local SpecialUnit = SpecialUnit
-local bossCD = bossCD
-local autoSF = autoSF
 
-if autoSF ~= 1 then return false end
+if not PQI_MentallyShadow_AutoShadowfiend_enable then return false end
 	
 if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
 	
 if TargetValidation(&amp;quot;target&amp;quot;, PQ_SF) and not SCD then
-	if bossCD == 1 then
+	if PQI_MentallyShadow_BossCooldown_enable then
 		if SpecialUnit() then return true end
 	else return true end
 end</Lua><RecastDelay>100</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MF = PQ_MF
@@ -163,56 +161,12 @@ end</Lua><RecastDelay>500</RecastDelay><Target>Target</Target><CancelChannel>Tru
 -------------------------------------------------------------------------------
 -- Load LUA data files.
 if PQR_RotationStarted == true then
-	PQR_RotationStarted = false
-	
-	-- Tables
-	Nova_ValueCheck = {
-		[1] =	{ Var1 = nil,	Text = &amp;quot;Survival Settings&amp;quot;,			Var2 = nil },
-		[2] =	{ Var1 = nil,	Text = &amp;quot;Auto Healthstone&amp;quot;,			Var2 = 1 },
-		[3] =	{ Var1 = 30,	Text = &amp;quot;Healthstone Health&amp;quot;,		Var2 = nil },
-		[4] =	{ Var1 = nil,	Text = &amp;quot;Desperate Prayer Check&amp;quot;,	Var2 = 1 },
-		[5] =	{ Var1 = 30,	Text = &amp;quot;Desperate Prayer Health&amp;quot;,	Var2 = nil },
-		[6]	=	{ Var1 = 50,	Text = &amp;quot;Void Shift Health&amp;quot;,			Var2 = nil },
-		[7] =	{ Var1 = nil,	Text = &amp;quot;Cooldown Settings&amp;quot;,			Var2 = nil },
-		[8] =	{ Var1 = nil,	Text = &amp;quot;Auto Power Infusion&amp;quot;,		Var2 = 1 },
-		[9] =	{ Var1 = nil,	Text = &amp;quot;Auto Shadowfiend&amp;quot;,			Var2 = 1 },
-		[10] =	{ Var1 = nil,	Text = &amp;quot;Auto Racial Use&amp;quot;,			Var2 = 1 },
-		[11] =	{ Var1 = nil,	Text = &amp;quot;Auto Potion (Hero)&amp;quot;,		Var2 = 1 },
-		[12] =	{ Var1 = nil,	Text = &amp;quot;CD on Boss Only&amp;quot;,			Var2 = 1 }
-	}
-	Nova_CooldownCheck = {
-		[1]	=	{ Mod = 32,		Text = &amp;quot;Dispersion&amp;quot;,				Var1 = 1},
-		[2]	=	{ Mod = 1,		Text = &amp;quot;Level 90 Talent&amp;quot;,			Var1 = 1},
-		[3]	=	{ Mod =	4,		Text = &amp;quot;Mass Dispel&amp;quot;,				Var1 = 1},
-		[4]	=	{ Mod = 16,		Text = &amp;quot;Pause Rotation&amp;quot;,			Var1 = 1},
-		[5]	=	{ Mod = 8,		Text = &amp;quot;Toggle CD Mode&amp;quot;,			Var1 = 1},
-		[6]	=	{ Mod = false,	Text = &amp;quot;Level 15 Talent&amp;quot;,			Var1 = false},
-		[7]	=	{ Mod = false,	Text = &amp;quot;Vampiric Embrace&amp;quot;,			Var1 = false},
-		[8]	=	{ Mod = false,	Text = &amp;quot;Void Shift&amp;quot;,				Var1 = false}
-	}
-	
-	-- CVar Registration
-	for i=1,#Nova_ValueCheck do
-		if GetCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_ValueCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)) == nil then
-			RegisterCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_ValueCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;), Nova_ValueCheck[i].Var1)
-		end
-		if GetCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_ValueCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)..&amp;quot;_Enabled&amp;quot;) == nil then
-			RegisterCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_ValueCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)..&amp;quot;_Enabled&amp;quot;, Nova_ValueCheck[i].Var2)
-		end
-	end
-	for i=1,#Nova_CooldownCheck do
-		if GetCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_CooldownCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)) == nil then
-			RegisterCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_CooldownCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;), Nova_CooldownCheck[i].Mod)
-		end
-		if GetCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_CooldownCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)..&amp;quot;_Enabled&amp;quot;) == nil then
-			RegisterCVar(&amp;quot;Nova_&amp;quot;..string.gsub(Nova_CooldownCheck[i].Text,&amp;quot;%s&amp;quot;,&amp;quot;_&amp;quot;)..&amp;quot;_Enabled&amp;quot;, Nova_CooldownCheck[i].Var1)
-		end
-	end
+	PQR_RotationStarted = false	
 
 	-- Load LUA files
 	if PQR_LoadLua ~= nil then
-		if PQR_LoadLua(&amp;quot;PQR_Nova_Data.lua&amp;quot;) == false then
-			PQR_WriteToChat(&amp;quot;|cffb73737You&amp;apos;re missing PQR_Nova_Data.lua - Make sure it&amp;apos;s in your Data folder! The Rotation has been halted.|cffffffff&amp;quot;, &amp;quot;Error&amp;quot;)
+		if PQR_LoadLua(&amp;quot;PQR_Hysteria_Data.lua&amp;quot;) == false then
+			PQR_WriteToChat(&amp;quot;|cffb73737You&amp;apos;re missing PQR_Hysteria_Data.lua - Make sure it&amp;apos;s in your Data folder! The Rotation has been halted.|cffffffff&amp;quot;, &amp;quot;Error&amp;quot;)
 			PQR_StopRotation()
 			return true
 		end
@@ -221,54 +175,8 @@ if PQR_RotationStarted == true then
 			PQR_StopRotation()
 			return true
 		end
-		if PQR_LoadLua(&amp;quot;PQR_Nova_Frame.lua&amp;quot;) == true then
-			MiniMapCreation()
-			
-			-- Slash Commands
-			SLASH_NOVAFRAME1 = &amp;quot;/novaframe&amp;quot;
-			SLASH_NOVAFRAME2 = &amp;quot;/nova&amp;quot;
-			function SlashCmdList.NOVAFRAME(msg, editbox)
-				if Setup == nil then
-					Setup = true
-					FrameCreation(Nova_ValueCheck, Nova_CooldownCheck, &amp;quot;Shadow Priest Options&amp;quot;, &amp;quot;Shadow Cooldown Settings&amp;quot;)
-				end
-				if not Nova_Frame:IsShown() then Nova_Frame:Show() else Nova_Frame:Hide() end
-			end
-		end
 	end
 end
-
--- CVar Translations
--- Cooldowns
-AutoHS				= GetCVarBool(&amp;quot;Nova_Auto_Healthstone_Enabled&amp;quot;)
-DPcheck				= GetCVarBool(&amp;quot;Nova_Desperate_Prayer_Check_Enabled&amp;quot;)
-autoRacial			= GetCVarBool(&amp;quot;Nova_Auto_Racial_Use_Enabled&amp;quot;)
-autoPotion			= GetCVarBool(&amp;quot;Nova_Auto_Potion_(Hero)_Enabled&amp;quot;)
-autoPI				= GetCVarBool(&amp;quot;Nova_Auto_Power_Infusion_Enabled&amp;quot;)
-autoSF				= GetCVarBool(&amp;quot;Nova_Auto_Shadowfiend_Enabled&amp;quot;)
-bossCD				= GetCVarBool(&amp;quot;Nova_CD_on_Boss_Only_Enabled&amp;quot;)
--- Health Tresholds
-DPhealth			= tonumber(GetCVar(&amp;quot;Nova_Desperate_Prayer_Health&amp;quot;))
-hsHealth			= tonumber(GetCVar(&amp;quot;Nova_Healthstone_Health&amp;quot;))
-vsHealth			= tonumber(GetCVar(&amp;quot;Nova_Void_Shift_Health&amp;quot;))
--- Cooldowns
-Dispersion			= tonumber(GetCVar(&amp;quot;Nova_Dispersion&amp;quot;))
-Level90Talent		= tonumber(GetCVar(&amp;quot;Nova_Level_90_Talent&amp;quot;))
-MassDispel			= tonumber(GetCVar(&amp;quot;Nova_Mass_Dispel&amp;quot;))
-pauseRotation		= tonumber(GetCVar(&amp;quot;Nova_Pause_Rotation&amp;quot;))
-toggleMode			= tonumber(GetCVar(&amp;quot;Nova_Toggle_CD_Mode&amp;quot;))
-Level15Talent		= tonumber(GetCVar(&amp;quot;Nova_Level_15_Talent&amp;quot;))
-embrace				= tonumber(GetCVar(&amp;quot;Nova_Vampiric_Embrace&amp;quot;))
-voidShift			= tonumber(GetCVar(&amp;quot;Nova_Void_Shift&amp;quot;))
--- Cooldown Checks
-DispersionCheck 	= GetCVarBool(&amp;quot;Nova_Dispersion_Enabled&amp;quot;)
-Level90TalentCheck	= GetCVarBool(&amp;quot;Nova_Level_90_Talent_Enabled&amp;quot;)
-MassDispelCheck		= GetCVarBool(&amp;quot;Nova_Mass_Dispel_Enabled&amp;quot;)
-pauseRotationCheck	= GetCVarBool(&amp;quot;Nova_Pause_Rotation_Enabled&amp;quot;)
-toggleModeCheck		= GetCVarBool(&amp;quot;Nova_Toggle_CD_Mode_Enabled&amp;quot;)
-Level15TalentCheck	= GetCVarBool(&amp;quot;Nova_Level_15_Talent_Enabled&amp;quot;)
-embraceCheck		= GetCVarBool(&amp;quot;Nova_Vampiric_Embrace_Enabled&amp;quot;)
-voidShiftCheck		= GetCVarBool(&amp;quot;Nova_Void_Shift_Enabled&amp;quot;)
 
 -- Let&amp;apos;s not continue if we&amp;apos;re not in the right spec
 if UnitLevel(&amp;quot;player&amp;quot;) &amp;gt;= 10 then
@@ -292,13 +200,13 @@ else
 	PQR_Event(&amp;quot;PQR_Text&amp;quot;, &amp;quot;Cooldown Mode: Automatic&amp;quot;, nil, &amp;quot;79BAEC&amp;quot;)
 end
 
-local Nova_Mod = Nova_Mod
-local toggleMode = toggleMode
-local toggleModeCheck = toggleModeCheck
 if not SCDtimer then SCDtimer = 0 end
-if (toggleModeCheck and Nova_Mod() == toggleMode) and GetTime() - SCDtimer &amp;gt; 1 then
+if PQI_MentallyShadow_ToggleCooldownMode_enable
+	and not GetCurrentKeyBoardFocus()
+	and PQI:IsHotkeys(PQI_MentallyShadow_ToggleCooldownMode_key)
+	and GetTime() - SCDtimer &amp;gt; 1
+then
 	SCDtimer = GetTime()
-	
 	if SCD then
 		SCD = false
 		PQR_WriteToChat(&amp;quot;|cff347C2CCooldown Mode: |cff79BAECAutomatic|cffffffff&amp;quot;, &amp;quot;Notice&amp;quot;)
@@ -327,15 +235,14 @@ end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False
 		or not UnitAffectingCombat(&amp;quot;player&amp;quot;)
 	then return true end
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Dispersion</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_Disp = PQ_Disp
-local Nova_Mod = Nova_Mod
-local Dispersion = Dispersion
 local Hysteria_Spells = Hysteria_Spell
-local DispersionCheck = DispersionCheck
 
-if DispersionCheck ~= 1 then return false end
 
-if Nova_Mod() == Dispersion then
---if IsRightAltKeyDown() and not GetCurrentKeyBoardFocus() then
+if not PQI_MentallyShadow_Dispersion_enable then return false end
+if not PQI:IsHotkeys( PQI_MentallyShadow_Dispersion_key  ) then return false end
+
+if PQI:IsHotkeys(PQI_MentallyShadow_Dispersion_key)
+		and not GetCurrentKeyBoardFocus() then
 	if Hysteria_Spells[PQ_Disp].known and PQR_SpellAvailable(PQ_Disp) then
 		SpellStopCasting()
 		CastSpellByName(GetSpellInfo(PQ_Disp),&amp;quot;player&amp;quot;)
@@ -353,51 +260,11 @@ if IsPlayerSpell(PQ_FDCL) then
 	if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then
 		if UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) then return true end
 	end
-end</Lua><RecastDelay>100</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Dragon Soul Events</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_SN = PQ_Shrapnel
-local PQ_FL = PQ_FadingLight
-local PQ_HOT = PQ_HourOfTwilight
-
--- Fading Light Debuff
-for i=1,#PQ_FL do
-	if select(7,UnitDebuffID(&amp;quot;player&amp;quot;,PQ_FL[i]))
-		and select(7,UnitDebuffID(&amp;quot;player&amp;quot;,PQ_FL[i])) - GetTime() &amp;lt; 0.7 then
-			SpellStopCasting()
-			RunMacroText(&amp;quot;/click ExtraActionButton1&amp;quot;)
-	end
-end
-
--- Hour of Twilight
-if IsLeftShiftKeyDown() and not GetCurrentKeyBoardFocus() then
-	local Hysteria_Spells = Hysteria_Spell
-	local PQ_Disp = PQ_Disp
-	
-	if Hysteria_Spells[PQ_Disp].known and PQR_SpellAvailable(PQ_Disp)
-	then SpellStopCasting() CastSpellByID(PQ_Disp, &amp;quot;player&amp;quot;) return true end
-else
-	local HourOfTwilight,_,_,_,_,endTime = UnitCastingInfo(&amp;quot;boss1&amp;quot;) 
-	for i=1,#PQ_HOT do
-		if HourOfTwilight == GetSpellInfo(PQ_HOT[i]) and endTime/1000 - GetTime() &amp;lt; 0.7 then
-			SpellStopCasting()
-			RunMacroText(&amp;quot;/click ExtraActionButton1&amp;quot;)
-		end
-	end
-end
-
--- Target for Shrapnel
-for i=1,#PQ_SN do
-	if select(7,UnitDebuffID(&amp;quot;player&amp;quot;,PQ_SN[i]))
-		and select(7,UnitDebuffID(&amp;quot;player&amp;quot;,PQ_SN[i])) - GetTime() &amp;lt; 2 then
-			SpellStopCasting()
-			RunMacroText(&amp;quot;/click ExtraActionButton1&amp;quot;)
-	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Click</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Mass Dispel</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Nova_Mod = Nova_Mod
-local MassDispel = MassDispel
-local MassDispelCheck = MassDispelCheck
-
-if MassDispelCheck ~= 1 then return false end
+end</Lua><RecastDelay>100</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Mass Dispel</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_MassDispel_enable then return false end
 
 if PQR_SpellAvailable(32375)
-	and Nova_Mod() == MassDispel then
+	and PQI:IsHotkeys(PQI_MentallyShadow_MassDispel_key)
+	and not GetCurrentKeyBoardFocus() then
 		SpellCancelQueuedSpell()
 		CastSpellByID(32375)
 		if SpellIsTargeting() then SpellCancelQueuedSpell() CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
@@ -409,21 +276,21 @@ if timer and timer - GetTime() &amp;lt; 2 then
 	RunMacroText(&amp;quot;/click ExtraActionButton1&amp;quot;)
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Level 90 Talent</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_Star = PQ_Star
 local PQ_Halo = PQ_Halo
-local Nova_Mod = Nova_Mod
 local PQ_DStar = PQ_DStar
 local PQ_Cascade = PQ_Cascade
 local PQ_DCascade = PQ_DCascade
 local PQ_DarkHalo = PQ_DarkHalo
-local Level90Talent = Level90Talent
-local Level90TalentCheck = Level90TalentCheck
 
-if Level90TalentCheck ~= 1 then return false end
+if not PQI_MentallyShadow_Level90Talent_enable then return false end
+if not PQI:IsHotkeys( PQI_MentallyShadow_Level90Talent_key  ) then return false end
+
 if PQR_SpellAvailable(32379) or PQR_SpellAvailable(8092) then return false end
 
 -- Halo
 if IsPlayerSpell(PQ_Halo)
 	and PQR_SpellAvailable(PQ_DarkHalo)
-	and Nova_Mod() == Level90Talent
+	and PQI:IsHotkeys(PQI_MentallyShadow_Level90Talent_key)
+	and not GetCurrentKeyBoardFocus()
 then
 	SpellCancelQueuedSpell()
 	CastSpellByName(GetSpellInfo(PQ_DarkHalo),&amp;quot;target&amp;quot;)
@@ -433,7 +300,8 @@ end
 -- Divine Star
 if IsPlayerSpell(PQ_Star)
 	and PQR_SpellAvailable(PQ_DStar)
-	and Nova_Mod() == Level90Talent
+	and PQI:IsHotkeys(PQI_MentallyShadow_Level90Talent_key)
+	and not GetCurrentKeyBoardFocus()
 then
 	SpellCancelQueuedSpell()
 	CastSpellByName(GetSpellInfo(PQ_DStar),&amp;quot;target&amp;quot;)
@@ -445,30 +313,30 @@ if IsPlayerSpell(PQ_Cascade)
 	and UnitExists(&amp;quot;target&amp;quot;)
 	and PQR_SpellAvailable(PQ_DCascade)
 	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
-	and Nova_Mod() == Level90Talent
+	and PQI:IsHotkeys(PQI_MentallyShadow_Level90Talent_key)
+	and not GetCurrentKeyBoardFocus()
 then
 	SpellCancelQueuedSpell()
 	CastSpellByName(GetSpellInfo(PQ_DCascade),&amp;quot;target&amp;quot;)
 	return true
 end</Lua><RecastDelay>2000</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Racials</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>-- Racials
-local PQ_SF = PQ_SF
 local SCD = SCD
-local bossCD = bossCD
-local autoRacial = autoRacial
 local PQ_HasHero = PQ_HasHero
 local Hysteria_UnitInfo = Hysteria_UnitInfo
 local SpecialUnit = SpecialUnit
 
 -- Don&amp;apos;t use Racials if user tagged off automatic use
-if autoRacial ~= 1 then return false end
+if not PQI_MentallyShadow_AutoRacials_enable then return false end
 
 -- Troll: Berserking
 if IsPlayerSpell(26297) and not SCD then
-	if not PQ_HasHero and PQR_SpellAvailable(PQ_SF) and PQR_SpellAvailable(26297) then
-		if bossCD ~= 1 then
-			SpellCancelQueuedSpell()
-			CastSpellByName(GetSpellInfo(26297),&amp;quot;player&amp;quot;)
-			return true
+	if not PQ_HasHero() and PQR_SpellAvailable(26297) then
+		if not PQI_MentallyShadow_BossCooldown_enable then
+			if UnitExists(&amp;quot;target&amp;quot;) and UnitAffectingCombat(&amp;quot;player&amp;quot;) then
+				SpellCancelQueuedSpell()
+				CastSpellByName(GetSpellInfo(26297),&amp;quot;player&amp;quot;)
+				return true
+			end
 		else
 			if SpecialUnit() then
 				SpellCancelQueuedSpell()
@@ -481,7 +349,8 @@ end
 
 -- Blood Elf: Arcane Torrent
 if IsPlayerSpell(28730) and not SCD then
-	if PQR_SpellAvailable(28730) and select(3,Hysteria_UnitInfo(&amp;quot;player&amp;quot;)) &amp;lt; 95 then
+	if PQR_SpellAvailable(28730) and select(3,Hysteria_UnitInfo(&amp;quot;player&amp;quot;)) &amp;lt; 94
+	and UnitExists(&amp;quot;target&amp;quot;) and UnitAffectingCombat(&amp;quot;player&amp;quot;) then
 		SpellCancelQueuedSpell()
 		CastSpellByName(GetSpellInfo(28730),&amp;quot;player&amp;quot;)
 		return true
@@ -490,11 +359,13 @@ end
 
 -- Orc: Blood Fury
 if IsPlayerSpell(33702) and not SCD then
-	if PQR_SpellAvailable(33702) and (PQR_SpellAvailable(PQ_SF) or PQ_HasHero()) then
-		if bossCD ~= 1 then
-			SpellCancelQueuedSpell()
-			CastSpellByName(GetSpellInfo(33702),&amp;quot;player&amp;quot;)
-			return true
+	if PQR_SpellAvailable(33702) then
+		if not PQI_MentallyShadow_BossCooldown_enable then
+			if UnitExists(&amp;quot;target&amp;quot;) and UnitAffectingCombat(&amp;quot;player&amp;quot;) then
+				SpellCancelQueuedSpell()
+				CastSpellByName(GetSpellInfo(33702),&amp;quot;player&amp;quot;)
+				return true
+			end
 		else
 			if SpecialUnit() then
 				SpellCancelQueuedSpell()
@@ -504,33 +375,30 @@ if IsPlayerSpell(33702) and not SCD then
 		end
 	end
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Desperate Prayer</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_DPrayer = PQ_DPrayer
-local DPhealth = DPhealth
-local DPcheck = DPcheck
 local Hysteria_UnitInfo = Hysteria_UnitInfo
+local v=PQI_MentallyShadow_DesperatePrayer_value 
 
-if DPcheck ~= 1 then return false end
+if not PQI_MentallyShadow_DesperatePrayer_enable then return false end
 
 if IsPlayerSpell(PQ_DPrayer)
-	and Hysteria_UnitInfo(&amp;quot;player&amp;quot;) &amp;lt;= DPhealth
+	and Hysteria_UnitInfo(&amp;quot;player&amp;quot;) &amp;lt;= v
 	and PQR_SpellAvailable(PQ_DPrayer)
 then
 	CastSpellByName(GetSpellInfo(PQ_DPrayer),&amp;quot;player&amp;quot;)
 	return true
-end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Void Shift (Mouseover)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Nova_Mod = Nova_Mod
-local vsHealth = vsHealth
-local voidShift = voidShift
-local Hysteria_UnitInfo = Hysteria_UnitInfo
-local voidShiftCheck = voidShiftCheck
+end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Void Shift (Mouseover)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Hysteria_UnitInfo = Hysteria_UnitInfo
+local v=PQI_MentallyShadow_VoidShift_value
 
-if voidShiftCheck ~= 1 then return false end
+if not PQI_MentallyShadow_VoidShift_enable then return false end
 
 if IsPlayerSpell(108968) and PQR_SpellAvailable(108968) then
-	if Nova_Mod() == voidShift then
-		if not UnitIsDeadOrGhost(&amp;quot;mouseover&amp;quot;) and Hysteria_UnitInfo(&amp;quot;mouseover&amp;quot;) &amp;lt;= vsHealth then
-			SpellCancelQueuedSpell()
-			CastSpellByName(GetSpellInfo(108968),&amp;quot;mouseover&amp;quot;)
-			return true
-		end
+	if PQI:IsHotkeys(PQI_MentallyShadow_VoidShift_key)
+		and not GetCurrentKeyBoardFocus() then
+			if not UnitIsDeadOrGhost(&amp;quot;mouseover&amp;quot;) and Hysteria_UnitInfo(&amp;quot;mouseover&amp;quot;) &amp;lt;= v then
+				SpellCancelQueuedSpell()
+				CastSpellByName(GetSpellInfo(108968),&amp;quot;mouseover&amp;quot;)
+				return true
+			end
 	end
 end</Lua><RecastDelay>0</RecastDelay><Target>Mouseover</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Automatic Buffing</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_IF = PQ_IF
 local PQ_SForm = PQ_SForm
@@ -557,45 +425,38 @@ if IsPlayerSpell(PQ_FDCL) and PQR_IsMoving(0.3) then
 	if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then
 		if UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) then return true end
 	end
-end</Lua><RecastDelay>100</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Pause Rotation</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Nova_Mod = Nova_Mod
-local pauseRotation = pauseRotation
-local pauseRotationCheck = pauseRotationCheck
+end</Lua><RecastDelay>100</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Pause Rotation</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_PauseRotation_enable then return false end
 
-if pauseRotationCheck ~= 1 then return false end
-if Nova_Mod() == pauseRotation then return true end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Crowd Control] Level 15 Talent</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Nova_Mod = Nova_Mod
-local Level15Talent = Level15Talent
-local Level15TalentCheck = Level15TalentCheck
-
-if Level15TalentCheck ~= 1 then return false end
+if PQI:IsHotkeys(PQI_MentallyShadow_PauseRotation_key)
+	and not GetCurrentKeyBoardFocus() then return true end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Crowd Control] Level 15 Talent</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_Level15Talent_enable then return false end
 
 -- Void Tendrils
 if IsPlayerSpell(108920) and PQR_SpellAvailable(108920) then
-	if Nova_Mod() == Level15Talent then
-		SpellCancelQueuedSpell()
-		CastSpellByName(GetSpellInfo(108920),&amp;quot;player&amp;quot;)
-		return true
+	if PQI:IsHotkeys(PQI_MentallyShadow_Level15Talent_key)
+		and not GetCurrentKeyBoardFocus() then
+			SpellCancelQueuedSpell()
+			CastSpellByName(GetSpellInfo(108920),&amp;quot;player&amp;quot;)
+			return true
 	end
 end
 
 -- Psyfiend
 if IsPlayerSpell(108921) and PQR_SpellAvailable(108921) then
-	if Nova_Mod() == Level15Talent then
-		SpellCancelQueuedSpell()
-		CastSpellByID(108921)
-		if SpellIsTargeting() then SpellCancelQueuedSpell() CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
-		return true
+	if PQI:IsHotkeys(PQI_MentallyShadow_Level15Talent_key)
+		and not GetCurrentKeyBoardFocus() then
+			SpellCancelQueuedSpell()
+			CastSpellByID(108921)
+			if SpellIsTargeting() then SpellCancelQueuedSpell() CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
+			return true
 	end
-end</Lua><RecastDelay>2000</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Vampiric Embrace</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local embrace = embrace
-local embraceCheck = embraceCheck
-local Nova_Mod = Nova_Mod
-
-if embraceCheck ~= 1 then return false end
+end</Lua><RecastDelay>2000</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Vampiric Embrace</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_VampiricEmbrace_enable then return false end
 
 if IsPlayerSpell(15286) and PQR_SpellAvailable(15286) then
-	if Nova_Mod() == embrace then
-		SpellCancelQueuedSpell()
-		CastSpellByName(GetSpellInfo(15286),&amp;quot;player&amp;quot;)
-		return true
+	if PQI:IsHotkeys(PQI_MentallyShadow_VampiricEmbrace_key)
+		and not GetCurrentKeyBoardFocus() then
+			SpellCancelQueuedSpell()
+			CastSpellByName(GetSpellInfo(15286),&amp;quot;player&amp;quot;)
+			return true
 	end
 end</Lua><RecastDelay>2000</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Priority Targeting</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>--[[
 	Notice: This will only work on English clients!
@@ -629,12 +490,11 @@ for i=1,#targetTable do
 			then RunMacroText(&amp;quot;/cleartarget&amp;quot;) else return false end
 		else return false end
 	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Potion Usage</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local autoPotion = autoPotion
-local PQ_HasHero = PQ_HasHero
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Potion Usage</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_HasHero = PQ_HasHero
 local SpecialUnit = SpecialUnit
 
 -- Don&amp;apos;t use Potion during Heroism if user tagged off automatic use
-if autoPotion ~= 1 then return false end
+if not PQI_MentallyShadow_AutoPotion_enable then return false end
 
 if GetItemCount(76093,false,true) &amp;gt; 0
 	and GetItemCooldown(76093) == 0
@@ -642,26 +502,31 @@ if GetItemCount(76093,false,true) &amp;gt; 0
 	and SpecialUnit()
 then UseItemByName(76093) return true end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Power Infusion</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_PI = PQ_PI
 local SCD = SCD
-local autoPI = autoPI
-local bossCD = bossCD
 local SpecialUnit = SpecialUnit
 
-if autoPI ~= 1 then return false end
+if not PQI_MentallyShadow_AutoPowerInfusion_enable then return false end
+if not PQI_MentallyShadow_BossCooldown_enable then return false end
 
 if IsPlayerSpell(PQ_PI) and
 	not SCD
 	and PQR_SpellAvailable(PQ_PI)
 then
-	if bossCD == 1 then
-		if SpecialUnit() then CastSpellByName(GetSpellInfo(PQ_PI),&amp;quot;player&amp;quot;) return true end
-	else CastSpellByName(GetSpellInfo(PQ_PI),&amp;quot;player&amp;quot;) return true end
-end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Healthstone</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local AutoHS = AutoHS
-local hsHealth = hsHealth
-
-if AutoHS ~= 1 then return false end
+	if not PQI_MentallyShadow_BossCooldown_enable then
+		if UnitExists(&amp;quot;target&amp;quot;) and UnitAffectingCombat(&amp;quot;player&amp;quot;) then
+			CastSpellByName(GetSpellInfo(PQ_PI),&amp;quot;player&amp;quot;)
+			return true
+		end
+	else
+		if SpecialUnit() then
+			CastSpellByName(GetSpellInfo(PQ_PI),&amp;quot;player&amp;quot;)
+			return true
+		end
+	end
+end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Healthstone</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_Healthstone_enable then return false end
+local v=PQI_MentallyShadow_Healthstone_value
 
 if GetItemCount(5512,false,true) &amp;gt; 0
-	and Hysteria_UnitInfo(&amp;quot;player&amp;quot;) &amp;lt;= hsHealth
+	and Hysteria_UnitInfo(&amp;quot;player&amp;quot;) &amp;lt;= v
 	and PQR_SpellAvailable(5512)
 	and UnitAffectingCombat(&amp;quot;player&amp;quot;)
 	and GetItemCooldown(5512) == 0
@@ -670,7 +535,6 @@ then
 	return true
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Alchemy: Lifeblood</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local SpecialUnit = SpecialUnit
 local PQ_HasHero = PQ_HasHero
-local bossCD = bossCD
 local SCD = SCD
 -- Herbalism&amp;apos;s Lifeblood
 PQ_Lifeblood = {81708,74497,121279,55428,55480,55500,55501,55502,55503}
@@ -683,7 +547,7 @@ for i=1,#PQ_Lifeblood do
 		and not PQ_HasHero()
 		and not SCD
 	then
-		if bossCD ~= 1 then
+		if not PQI_MentallyShadow_BossCooldown_enable then
 			CastSpellByName(GetSpellInfo(PQ_Lifeblood[i]),&amp;quot;player&amp;quot;)
 			return true
 		else
