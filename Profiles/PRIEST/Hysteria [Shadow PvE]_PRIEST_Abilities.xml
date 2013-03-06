@@ -505,7 +505,6 @@ local SCD = SCD
 local SpecialUnit = SpecialUnit
 
 if not PQI_MentallyShadow_AutoPowerInfusion_enable then return false end
-if not PQI_MentallyShadow_BossCooldown_enable then return false end
 
 if IsPlayerSpell(PQ_PI) and
 	not SCD
