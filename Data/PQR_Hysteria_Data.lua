@@ -726,6 +726,7 @@ elseif select(2, UnitClass("player")) == "PRIEST" then
 	PQ_VT		= 34914			-- Vampiric Touch
 	PQ_MS		= 73510			-- Mind Spike
 	PQ_MF		= 15407			-- Mind Flay
+	PQ_MFI		= 129197		-- Mind Flay (Insanity)
 	PQ_MSear	= 48045			-- Mind Sear
 	
 	-- Cooldowns

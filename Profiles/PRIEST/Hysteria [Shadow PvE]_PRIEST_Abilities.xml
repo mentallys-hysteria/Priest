@@ -508,9 +508,11 @@ if GetItemCount(76093,false,true) &amp;gt; 0
 	and SpecialUnit()
 then UseItemByName(76093) return true end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Power Infusion</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_PI = PQ_PI
 local SCD = SCD
+local PQ_HasHero = PQ_HasHero
 local SpecialUnit = SpecialUnit
 
 if not PQI_MentallyShadow_AutoPowerInfusion_enable then return false end
+if PQ_HasHero() then return false end
 
 if IsPlayerSpell(PQ_PI) and
 	not SCD
@@ -564,6 +566,7 @@ for i=1,#PQ_Lifeblood do
 	end
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (Insanity)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_DP = PQ_DP
 local PQ_MF = PQ_MF
+local PQ_MFI = PQ_MFI
 local Hysteria_Spells = Hysteria_Spell
 
 if PQR_IsMoving(0.3) then return false end
@@ -577,4 +580,10 @@ if Hysteria_Spells[PQ_MF].known
 	and UnitCanAttack(&amp;quot;player&amp;quot;, &amp;quot;target&amp;quot;) == 1
 	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
 	and not PQR_IsOutOfSight(&amp;quot;target&amp;quot;, 1)
-then CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;) end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>
+then CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;) end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>MFI Cancel</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MFI = PQ_MFI
+
+if UnitChannelInfo(&amp;quot;player&amp;quot;) == GetSpellInfo(PQ_MFI) then
+	if select(6,UnitChannelInfo(&amp;quot;player&amp;quot;))/1000 - GetTime() &amp;lt;= 1 then
+		RunMacroText(&amp;quot;/stopcasting&amp;quot;)
+	end
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>
