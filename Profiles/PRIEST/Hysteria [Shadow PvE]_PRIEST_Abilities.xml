@@ -411,7 +411,6 @@ local PQ_SForm = PQ_SForm
 local PQ_PWF = PQ_PWF
 local GCD = (1.5*((1+(UnitSpellHaste(&amp;quot;player&amp;quot;)*128.06)/12806)^-1))
 local selfBuffs = {PQ_IF,PQ_SForm}
-local PQ_AuraInfo = PQ_AuraInfo
 
 if GetSpecialization() ~= 3 then return false else
 	if not timer then timer = GetTime() end
@@ -423,6 +422,12 @@ if GetSpecialization() ~= 3 then return false else
 	end
 	
 	if not UnitBuffID(&amp;quot;player&amp;quot;,PQ_SForm) then return true end
+end
+
+if IsPlayerSpell(PQ_PWF) then
+	if not PQ_AuraInfo(2, &amp;quot;player&amp;quot;) then
+		CastSpellByName(GetSpellInfo(PQ_PWF),&amp;quot;player&amp;quot;) return true
+	end
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Spike (Movement)</Name><Default>false</Default><SpellID>73510</SpellID><Actions></Actions><Lua>local PQ_FDCL = PQ_FDCL
 
 if IsPlayerSpell(PQ_FDCL) and PQR_IsMoving(0.3) then
