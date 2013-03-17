@@ -410,7 +410,8 @@ end</Lua><RecastDelay>0</RecastDelay><Target>Mouseover</Target><CancelChannel>Tr
 local PQ_SForm = PQ_SForm
 local PQ_PWF = PQ_PWF
 local GCD = (1.5*((1+(UnitSpellHaste(&amp;quot;player&amp;quot;)*128.06)/12806)^-1))
-local selfBuffs = {PQ_IF,PQ_SForm,PQ_PWF}
+local selfBuffs = {PQ_IF,PQ_SForm}
+local PQ_AuraInfo = PQ_AuraInfo
 
 if GetSpecialization() ~= 3 then return false else
 	if not timer then timer = GetTime() end
@@ -420,6 +421,7 @@ if GetSpecialization() ~= 3 then return false else
 			timer = GetTime()
 		end
 	end
+	
 	if not UnitBuffID(&amp;quot;player&amp;quot;,PQ_SForm) then return true end
 end</Lua><RecastDelay>0</RecastDelay><Target>Player</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Spike (Movement)</Name><Default>false</Default><SpellID>73510</SpellID><Actions></Actions><Lua>local PQ_FDCL = PQ_FDCL
 
@@ -580,10 +582,4 @@ if Hysteria_Spells[PQ_MF].known
 	and UnitCanAttack(&amp;quot;player&amp;quot;, &amp;quot;target&amp;quot;) == 1
 	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
 	and not PQR_IsOutOfSight(&amp;quot;target&amp;quot;, 1)
-then CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;) end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>MFI Cancel</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MFI = PQ_MFI
-
-if UnitChannelInfo(&amp;quot;player&amp;quot;) == GetSpellInfo(PQ_MFI) then
-	if select(6,UnitChannelInfo(&amp;quot;player&amp;quot;))/1000 - GetTime() &amp;lt;= 1 then
-		RunMacroText(&amp;quot;/stopcasting&amp;quot;)
-	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>
+then CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;) end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>

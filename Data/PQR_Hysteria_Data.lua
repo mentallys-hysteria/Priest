@@ -449,10 +449,17 @@ function TargetValidation(unit, spell)
 			if IsSpellKnown(spell) then
 				if PQR_SpellAvailable(spell) then
 					if IsSpellInRange(GetSpellInfo(spell), unit) == 1 then return true else return false end
-			else return false end
-		else
-			if select(2, GetSpellCooldown(spell)) == 0 then return true end
-	 	end
+				else
+					if spell == 8092 or spell == 32379 then
+						local spellCD = select(2,GetSpellCooldown(spell)) + GetSpellCooldown(spell) - GetTime()
+						if spellCD <= 0 then spellCD = 0 end
+						if spellCD <= 0.5 then return true end
+					end
+					return false
+				end
+			else
+				if select(2, GetSpellCooldown(spell)) == 0 then return true end
+			end
 	end
 end
 
