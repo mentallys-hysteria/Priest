@@ -15,7 +15,7 @@ Creating Profiles is always very fun and challenging. If you like my profiles an
 Donations help me out a lot, but are always completely optional!
 
 ## What it Supports
-- Mouseover and Focus dotting applicable to Vampiric Embrace and Shadow Word: Pain
+- Mouseover and Focus dotting applicable to Vampiric Touch and Shadow Word: Pain
 - All Racial abilities, executed for maximum damage
 - Automatic defensive healing with Healthstones and Desperate Prayer
 - Smart cooldown usage depending on encounter flows and buffs
