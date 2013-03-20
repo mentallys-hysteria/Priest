@@ -34,7 +34,7 @@ https://dl.dropbox.com/u/68742776/PQInstallation.7z
 Once you've downloaded **PQInterface**, extract the contents anywhere you can find it.
 
 - Navigate to where you extracted **PQInterface** and enter the ***/PQInstallation/*** folder.
-- Unless you're a profile developer, ignore the ***PQR_PQI.lua*** file and ***/sample deathknight profile/*** folder and copy the ***/PQInterface/*** folder to your **World of Warcraft/Interface/addon/** folder.
+- Unless you're a profile developer, ignore the ***PQR_PQI.lua*** file and ***/sample deathknight profile/*** folder and copy the ***/PQInterface/*** folder to your **World of Warcraft/Interface/addons/** folder.
 
 
 ## Keybindings
