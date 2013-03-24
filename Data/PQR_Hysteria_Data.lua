@@ -963,7 +963,7 @@ elseif select(2,UnitClass("player")) == "WARLOCK" then
 				},
 			},
 			{ 	name	= "Mortal Coil",
-				enable	= true,
+				enable	= false,
 				widget	= { type = "numBox",
 					value	= 50,
 					step	= 5,
