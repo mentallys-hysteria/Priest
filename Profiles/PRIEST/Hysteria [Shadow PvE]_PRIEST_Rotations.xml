@@ -1,15 +1,32 @@
-<?xml version="1.0" encoding="utf-8" ?><PRIEST><Options><ProfileVersion>9.5</ProfileVersion><AbilityURL>https://raw.github.com/mentallys-hysteria/Priest/master/Profiles/PRIEST/Hysteria%20%5BShadow%20PvE%5D_PRIEST_Abilities.xml</AbilityURL><RotationURL>https://raw.github.com/mentallys-hysteria/Priest/master/Profiles/PRIEST/Hysteria%20%5BShadow%20PvE%5D_PRIEST_Rotations.xml</RotationURL><LuaURL>https://raw.github.com/mentallys-hysteria/Priest/master/Data/PQR_Hysteria_Data.lua</LuaURL><LegacyMode>True</LegacyMode></Options><Rotation><RotationName>Standard</RotationName><RotationDefault>false</RotationDefault><RotationList>[Misc] Initialization|[Misc] Pause Rotation|[Support] Automatic Buffing|[Misc] Instance: Combat Detection|[Support] Dispersion|[Support] Healthstone|[Support] Mass Dispel|[Support] Potion Usage|[Support] Desperate Prayer|[Support] Alchemy: Lifeblood|[Support] Power Infusion|[Support] Racials|Mind Spike (Movement)|Shadowfiend|Devouring Plague|Shadow Word: Death|Mind Blast|Mind Flay (Insanity)|Shadow Word: Pain|Vampiric Touch|Mind Spike|Shadow Word: Pain (Mouseover)|Vampiric Touch (Mouseover)|Level 90 Talent|Mind Flay</RotationList><RequireCombat>false</RequireCombat><RotationNotes>Automatic Shadow Priest rotation based upon personal experience and SimulationCraft. 5.2 Ready!
+<?xml version="1.0" encoding="utf-8" ?><PRIEST><Options><ProfileVersion>10</ProfileVersion><AbilityURL>https://raw.github.com/mentallys-hysteria/Priest/master/Profiles/PRIEST/Hysteria%20%5BShadow%20PvE%5D_PRIEST_Abilities.xml</AbilityURL><RotationURL>https://raw.github.com/mentallys-hysteria/Priest/master/Profiles/PRIEST/Hysteria%20%5BShadow%20PvE%5D_PRIEST_Rotations.xml</RotationURL><LuaURL>https://raw.github.com/mentallys-hysteria/Priest/master/Data/PQR_Hysteria_Data.lua</LuaURL><LegacyMode>True</LegacyMode></Options><Rotation><RotationName>Standard</RotationName><RotationDefault>false</RotationDefault><RotationList>[Misc] Initialization|[Misc] MSV Events|[Misc] Pause Rotation|[Misc] Automatic Buffing|[Misc] Instanced Combat Detection|[Support] Dispersion|[Support] Healthstone|[Support] Mass Dispel|[Support] Desperate Prayer|[Support] Auto Potion (Heroism)|[Support] Shadowfiend|[Support] Power Infusion|[Support] Racials|[Support] Herbalism: Lifeblood|Mind Sear|Devouring Plague (High)|Mind Blast|Shadow Word: Death|Shadow Word: Death (Mouseover)|Mind Flay (Insanity) (NoCancel)|Mind Flay (Insanity)|Shadow Word: Pain (Boss)|Shadow Word: Pain (Mouseover)|Shadow Word: Pain|Vampiric Touch (Boss)|Vampiric Touch (Mouseover)|Vampiric Touch|Mind Spike (High)|Devouring Plague|Level 90 Talent|Mind Spike|Mind Flay (NoCancel)|Mind Flay</RotationList><RequireCombat>false</RequireCombat><RotationNotes>Automatic Shadow Priest rotation based upon personal experience and SimulationCraft. 5.2 Ready!
 
 Support:
  - Mouseover dotting of Vampiric Embrace + Shadow Word: Pain
  - Racial abilities
+ - Automatic Boss dotting
  - Automatic healthstone usage
  - And much more, fully customizable in-game through PQInterface 2!
 
+Keybindings are now fully configurable in-game!
+
+- Left Shift: Mind Sear
+- Left Alt: Mass Dispel @ Mouseover location
+- Right Alt: Dispersion
+- Right Control: Pause Rotation
+- Right Shift: Toggle cooldown mode
+
+With optional Vampiric Touch, Void Shift on mouseover and Level 15 talent keybindings all ready!</RotationNotes></Rotation><Rotation><RotationName>Shadow Cleave</RotationName><RotationDefault>false</RotationDefault><RotationList>[Misc] Initialization|[Misc] MSV Events|[Misc] Pause Rotation|[Misc] Automatic Buffing|[Misc] Instanced Combat Detection|[Support] Dispersion|[Support] Healthstone|[Support] Mass Dispel|[Support] Desperate Prayer|[Support] Auto Potion (Heroism)|[Support] Shadowfiend|[Support] Power Infusion|[Support] Racials|[Support] Herbalism: Lifeblood|Mind Sear|Devouring Plague (High)|Mind Blast|Shadow Word: Death|Shadow Word: Death (Mouseover)|Mind Flay (Insanity) (NoCancel)|Mind Flay (Insanity)|Shadow Word: Pain (Boss)|Shadow Word: Pain (Mouseover)|Shadow Word: Pain|Vampiric Touch (Boss)|Vampiric Touch (Mouseover)|Vampiric Touch|Mind Spike (High)|Devouring Plague|Level 90 Talent|Mind Spike|Mind Flay (NoCancel)|Mind Flay</RotationList><RequireCombat>false</RequireCombat><RotationNotes>Automatic Shadow Priest rotation based upon personal experience and SimulationCraft. 5.2 Ready!
+
+Support:
+ - Mouseover dotting of Vampiric Embrace + Shadow Word: Pain
+ - Racial abilities
+ - Automatic Boss dotting
+ - Automatic healthstone usage
+ - And much more, fully customizable in-game through PQInterface 2!
 
 Keybindings are now fully configurable in-game!
 
-- Left Shift: Level 90 Talent
+- Left Shift: Mind Sear
 - Left Alt: Mass Dispel @ Mouseover location
 - Right Alt: Dispersion
 - Right Control: Pause Rotation
