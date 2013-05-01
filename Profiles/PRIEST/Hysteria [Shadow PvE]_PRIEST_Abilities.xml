@@ -2,7 +2,7 @@
 local Hysteria_Spells = Hysteria_Spell
 
 -- Disable if we don&amp;apos;t want to cancel channels.
-if not PQI_MentallyShadow_MindFlay_enable then return false end
+--if not PQI_MentallyShadow_MindFlay_enable then return false end
 
 -- Can&amp;apos;t cast while moving yet!
 if PQR_IsMoving(0.3) then return false end
@@ -55,6 +55,11 @@ if UnitLevel(&amp;quot;player&amp;quot;) &amp;gt;= 10 then
 	end
 end
 
+-- Unerring Vision of Lei-Shen check.
+local itemCheck = itemCheck
+local visionTrinket = visionTrinket
+if itemCheck(visionTrinket) == 1 then hasVision = true else hasVision = false end
+
 -- Cooldown Timer function
 if not SCDtimer then SCDtimer = 0 end
 if not SCD then SCD = false end
@@ -98,7 +103,11 @@ if not PQ_PriestLoaded then
 	Hysteria:SetScript(&amp;quot;OnEvent&amp;quot;, HysteriaFrame_OnEvent)
 	Hysteria:Show()
 	
+	-- Trinket Procs
 	Trinket = 0
+	
+	-- Tortos: Heroic
+	Rockfall = nil
 	
 	-- Mind Flay settings
 	flayTicks = 0
@@ -113,6 +122,7 @@ local SCD = SCD
 local PQ_DI = PQ_DI
 local PQ_DP = PQ_DP
 local TargetValidation = TargetValidation
+local Hysteria_UnitInfo = Hysteria_UnitInfo
 
 -- Don&amp;apos;t cast Mind Blast while we&amp;apos;re moving, without Divine Insight procs
 if PQR_IsMoving(0.3) and UnitBuffID(&amp;quot;player&amp;quot;,PQ_DI) then
@@ -121,6 +131,8 @@ if PQR_IsMoving(0.3) and UnitBuffID(&amp;quot;player&amp;quot;,PQ_DI) then
 end
 
 if PQR_IsMoving(0.3) then return false end
+
+if select(4,Hysteria_UnitInfo(&amp;quot;player&amp;quot;)) &amp;lt; select(4,GetSpellInfo(PQ_MB)) then return false end
 
 -- Also, if we have 3 Shadow Orbs, don&amp;apos;t cast Mind Blast if we&amp;apos;re not saving DP
 if UnitPower(&amp;quot;player&amp;quot;,13) &amp;gt; 2 and PQR_SpellAvailable(PQ_DP) and not SCD then return false end
@@ -138,6 +150,8 @@ local PQ_MB = PQ_MB
 local PQ_SWD = PQ_SWD
 local TargetValidation = TargetValidation
 local Hysteria_UnitInfo = Hysteria_UnitInfo
+local VT,_,_,_,_,_,VTtimer = UnitDebuffID(&amp;quot;target&amp;quot;,PQ_VT,&amp;quot;PLAYER&amp;quot;)
+local SWP,_,_,_,_,_,SWPtimer = UnitDebuffID(&amp;quot;target&amp;quot;,PQ_SWP,&amp;quot;PLAYER&amp;quot;)
 local MBCD = (GetSpellCooldown(PQ_MB) + select(2,GetSpellCooldown(PQ_MB)) - GetTime())
 local SWDCD = (GetSpellCooldown(PQ_SWD) + select(2,GetSpellCooldown(PQ_SWD)) - GetTime())
 
@@ -147,17 +161,24 @@ if SCD then return false end
 -- Properly clip Mind Flay / Insanity
 if not smartCancel() then return false end
 
+-- Cast when we have 3 Orbs.
+if UnitPower(&amp;quot;player&amp;quot;,13) &amp;lt;= 2 then return false end
+
+-- Let&amp;apos;s try and not let dots fall off.
+--if VT and VTtimer - GetTime() &amp;lt; 8 then return false end
+--if SWP and SWPtimer - GetTime() &amp;lt; 8 then return false end
+
 -- Cast Devouring Plague
-if TargetValidation(&amp;quot;target&amp;quot;, PQ_DP) then
-	if UnitPower(&amp;quot;player&amp;quot;,13) &amp;gt; 2 then
-		if MBCD &amp;lt; 1.5 or (Hysteria_UnitInfo(&amp;quot;target&amp;quot;) &amp;lt; 20 and SWDCD &amp;lt; 1.5) then
-			CastSpellByName(GetSpellInfo(PQ_DP),&amp;quot;target&amp;quot;)
-			return true
-		end
-	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Devouring Plague</Name><Default>false</Default><SpellID>0</SpellID><Actions>/use 13|/use 14|/use 10|/script UIErrorsFrame:Clear()</Actions><Lua>local PQ_DP = PQ_DP
+if MBCD &amp;lt; 1.5 or (Hysteria_UnitInfo(&amp;quot;target&amp;quot;) &amp;lt; 20 and SWDCD &amp;lt; 1.5) then
+	if TargetValidation(&amp;quot;target&amp;quot;, PQ_DP) then
+		CastSpellByName(GetSpellInfo(PQ_DP),&amp;quot;target&amp;quot;) return true end
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Devouring Plague</Name><Default>false</Default><SpellID>0</SpellID><Actions>/use 13|/use 14|/use 10|/script UIErrorsFrame:Clear()</Actions><Lua>local PQ_VT = PQ_VT
+local PQ_DP = PQ_DP
 local SCD = SCD
+local PQ_SWP = PQ_SWP
 local TargetValidation = TargetValidation
+local VT,_,_,_,_,_,VTtimer = UnitDebuffID(&amp;quot;target&amp;quot;,PQ_VT,&amp;quot;PLAYER&amp;quot;)
+local SWP,_,_,_,_,_,SWPtimer = UnitDebuffID(&amp;quot;target&amp;quot;,PQ_SWP,&amp;quot;PLAYER&amp;quot;)
 
 -- We&amp;apos;re saving DP, shoo!
 if SCD then return false end
@@ -165,12 +186,16 @@ if SCD then return false end
 -- Properly clip Mind Flay / Insanity
 if not smartCancel() then return false end
 
+-- Cast when we have 3 Orbs.
+if UnitPower(&amp;quot;player&amp;quot;,13) &amp;lt;= 2 then return false end
+
+-- Let&amp;apos;s try and not let dots fall off.
+--if VT and VTtimer - GetTime() &amp;lt; 8 then return false end
+--if SWP and SWPtimer - GetTime() &amp;lt; 8 then return false end
+
 -- Cast Devouring Plague
 if TargetValidation(&amp;quot;target&amp;quot;, PQ_DP) then
-	if UnitPower(&amp;quot;player&amp;quot;,13) &amp;gt; 2 then
-		CastSpellByName(GetSpellInfo(PQ_DP),&amp;quot;target&amp;quot;) return true
-	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Racials</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local SCD = SCD
+	CastSpellByName(GetSpellInfo(PQ_DP),&amp;quot;target&amp;quot;) return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Racials</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local SCD = SCD
 local PQ_HasHero = PQ_HasHero
 local SpecialUnit = SpecialUnit
 local Hysteria_UnitInfo = Hysteria_UnitInfo
@@ -189,7 +214,7 @@ end
 
 -- Troll: Berserking
 if IsPlayerSpell(26297) and not SCD then
-	if not PQ_HasHero() and PQR_SpellAvailable(26297) then
+	if PQR_SpellAvailable(26297) then
 		if not PQI_MentallyShadow_BossCooldown_enable then
 			if UnitExists(&amp;quot;target&amp;quot;) then
 				SpellCancelQueuedSpell()
@@ -235,13 +260,11 @@ if IsPlayerSpell(33702) and not SCD then
 	end
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Power Infusion</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_PI = PQ_PI
 local SCD = SCD
-local PQ_HasHero = PQ_HasHero
 local SpecialUnit = SpecialUnit
 
 -- Disable under various circumstances
 if not PQI_MentallyShadow_AutoPowerInfusion_enable then return false end
 if not UnitAffectingCombat(&amp;quot;player&amp;quot;) then return false end
-if PQ_HasHero() then return false end
 
 -- Activate Power Infusion
 if IsPlayerSpell(PQ_PI) and not SCD and PQR_SpellAvailable(PQ_PI) then
@@ -302,7 +325,7 @@ if TargetValidation(&amp;quot;target&amp;quot;,PQ_SWP) and isMindControledUnit(&
 	PQ_TempBuffs(PQ_TempTable)
 	
 	-- DoT overrides
-	if npcID == 60885 or npcID == 62919 then return false end
+	if npcID == 60885 or npcID == 62919 or npcID == 69352 or npcID == 68497 then return false end
 	
 	if SWP then
 		for i=1,#PQ_TempTable do
@@ -337,7 +360,7 @@ if TargetValidation(&amp;quot;target&amp;quot;,PQ_VT) and isMindControledUnit(&a
 	PQ_TempBuffs(PQ_TempTable)
 	
 	-- Don&amp;apos;t dot these targets
-	if npcID == 60885 or npcID == 63346 then return false end
+	if npcID == 60885 or npcID == 63346 or npcID == 69352 or npcID == 68497 then return false end
 	
 	if VT then
 		for i=1,#PQ_TempTable do
@@ -389,7 +412,7 @@ local Hysteria_Spells = Hysteria_Spell
 if not IsPlayerSpell(PQ_SnI) then return false end
 
 -- Disable if we don&amp;apos;t want to cancel channels.
-if not PQI_MentallyShadow_MindFlayInsanity_enable then return false end
+--if not PQI_MentallyShadow_MindFlayInsanity_enable then return false end
 
 -- If we don&amp;apos;t have DP up, don&amp;apos;t cast!
 if not UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP,&amp;quot;PLAYER&amp;quot;) then return false end
@@ -483,7 +506,7 @@ for i=1,#PQ_Lifeblood do
 		and not PQ_HasHero()
 		and not SCD
 	then
-		if not PQI_MentallyDemo_BossCooldown_enable then
+		if not PQI_MentallyShadow_BossCooldown_enable then
 			CastSpellByName(GetSpellInfo(PQ_Lifeblood[i]),&amp;quot;player&amp;quot;)
 			return true
 		else
@@ -586,6 +609,8 @@ if PQI:IsHotkeys(PQI_MentallyShadow_PauseRotation_key)
 	and not GetCurrentKeyBoardFocus() then return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Priority Targeting</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local targetTable = {
 	-- World of Warcraft: Mists of Pandaria
 	&amp;quot;Corrupted Waters&amp;quot;,
+	&amp;quot;Twisted Fate&amp;quot;,
+	&amp;quot;Blessed Loa Spirit&amp;quot;,
 	-- World of Warcraft: Cataclysm
 	&amp;quot;Burning Tendons&amp;quot;,
 	&amp;quot;Corrupting Parasite&amp;quot;,
@@ -684,7 +709,7 @@ if TargetValidation(&amp;quot;mouseover&amp;quot;,PQ_SWP) and isMindControledUni
 	local npcID = tonumber(UnitGUID(&amp;quot;mouseover&amp;quot;):sub(6,10), 16)
 	
 	-- DoT overrides
-	if npcID == 60885 or npcID == 62919 then return false end
+	if npcID == 60885 or npcID == 62919 or npcID == 69352 or npcID == 68497 then return false end
 	
 	if SWP then
 		if SWPtimer - GetTime() &amp;lt;= 4 then
@@ -708,7 +733,7 @@ if TargetValidation(&amp;quot;mouseover&amp;quot;,PQ_VT) and isMindControledUnit
 	local npcID = tonumber(UnitGUID(&amp;quot;mouseover&amp;quot;):sub(6,10), 16)
 	
 	-- Don&amp;apos;t dot these targets
-	if npcID == 60885 or npcID == 63346 then return false end
+	if npcID == 60885 or npcID == 63346 or npcID == 69352 or npcID == 68497 then return false end
 	
 	if VT then
 		if VTtimer - GetTime() &amp;lt;= 4 then CastSpellByName(GetSpellInfo(PQ_VT),&amp;quot;mouseover&amp;quot;) return true end
@@ -728,6 +753,10 @@ for i=1,4 do
 	local PQ_TempTable = PQ_TemporaryBuffs
 	local TargetValidation = TargetValidation
 	local SWP,_,_,_,_,_,SWPtimer = UnitDebuffID(bossUnit,PQ_SWP,&amp;quot;PLAYER&amp;quot;)
+	
+	-- Some bosses have immunities, these are bad
+	if UnitBuffID(bossUnit,116994) or UnitBuffID(bossUnit,122540) or UnitBuffID(bossUnit,123250)
+		then return false end
 
 	if TargetValidation(bossUnit,PQ_SWP) then
 		PQ_TempBuffs(PQ_TempTable)
@@ -765,6 +794,10 @@ for i=1,4 do
 	local PQ_TempTable = PQ_TemporaryBuffs
 	local TargetValidation = TargetValidation
 	local VT,_,_,_,_,_,VTtimer = UnitDebuffID(bossUnit,PQ_VT,&amp;quot;PLAYER&amp;quot;)
+	
+	-- Some bosses have immunities, these are bad
+	if UnitBuffID(bossUnit,116994) or UnitBuffID(bossUnit,122540) or UnitBuffID(bossUnit,123250)
+		then return false end
 
 	if TargetValidation(bossUnit,PQ_VT) then
 		PQ_TempBuffs(PQ_TempTable)
@@ -817,50 +850,18 @@ if IsPlayerSpell(108921) and PQR_SpellAvailable(108921) then
 			if SpellIsTargeting() then SpellCancelQueuedSpell() CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
 			return true
 	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (NoCancel)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MF = PQ_MF
-local Hysteria_Spells = Hysteria_Spell
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Frag Belt</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Belt = GetInventoryItemID(&amp;quot;player&amp;quot;, 6)
 
--- Disable if we don&amp;apos;t want to cancel channels.
-if PQI_MentallyShadow_MindFlay_enable then return false end
+-- Don&amp;apos;t use it if it&amp;apos;s on cooldown as well!
+if GetItemCooldown(Belt) &amp;gt; 0 then return false end
 
--- Can&amp;apos;t cast while moving yet!
-if PQR_IsMoving(0.3) then return false end
-
--- Cast Mind Flay
-if Hysteria_Spells[PQ_MF].known
-	and UnitExists(&amp;quot;target&amp;quot;)
-	and PQR_SpellAvailable(PQ_MF)
-	and UnitCanAttack(&amp;quot;player&amp;quot;, &amp;quot;target&amp;quot;) == 1
-	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
-	and not PQR_IsOutOfSight(&amp;quot;target&amp;quot;, 1)
+-- Cast Frag Belt on target during Metamorphosis
+if GetShapeshiftForm(&amp;quot;player&amp;quot;) == 1
+	and GetCurrentKeyBoardFocus() == nil 
+	and UnitIsUnit(&amp;quot;target&amp;quot;, &amp;quot;mouseover&amp;quot;)
 then
-	CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;)
-	return true
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (Insanity) (NoCancel)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MF = PQ_MF
-local PQ_DP = PQ_DP
-local PQ_SnI = PQ_SnI
-local Hysteria_Spells = Hysteria_Spell
-
--- Disable if we don&amp;apos;t have Solace &amp; Insanity
-if not IsPlayerSpell(PQ_SnI) then return false end
-
--- Disable if we don&amp;apos;t want to cancel channels.
-if PQI_MentallyShadow_MindFlayInsanity_enable then return false end
-
--- If we don&amp;apos;t have DP up, don&amp;apos;t cast!
-if not UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP,&amp;quot;PLAYER&amp;quot;) then return false end
-
--- Can&amp;apos;t cast while moving yet!
-if PQR_IsMoving(0.3) then return false end
-
--- Cast Mind Flay
-if Hysteria_Spells[PQ_MF].known
-	and UnitExists(&amp;quot;target&amp;quot;)
-	and PQR_SpellAvailable(PQ_MF)
-	and UnitCanAttack(&amp;quot;player&amp;quot;, &amp;quot;target&amp;quot;) == 1
-	and not UnitIsDeadOrGhost(&amp;quot;target&amp;quot;)
-	and not PQR_IsOutOfSight(&amp;quot;target&amp;quot;, 1)
-then
-	CastSpellByName(GetSpellInfo(PQ_MF),&amp;quot;target&amp;quot;)
+	SpellCancelQueuedSpell()
+	UseItemByName(Belt)
+	if SpellIsTargeting() then CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
 	return true
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability></PRIEST>

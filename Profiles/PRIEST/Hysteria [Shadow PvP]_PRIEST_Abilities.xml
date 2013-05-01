@@ -78,7 +78,25 @@ if unitCheck(&amp;quot;target&amp;quot;,Immune) then return true end
 if unitCheck(&amp;quot;target&amp;quot;,SpellImmune) then return true end
 
 -- At this point, everything should have loaded perfectly!
+-- At this point, everything should have loaded perfectly!
 if not PQ_PriestLoaded then
+	local Hysteria = CreateFrame(&amp;quot;Frame&amp;quot;)
+	Hysteria:RegisterEvent(&amp;quot;COMBAT_LOG_EVENT_UNFILTERED&amp;quot;)
+	Hysteria:SetScript(&amp;quot;OnEvent&amp;quot;, HysteriaFrame_OnEvent)
+	Hysteria:Show()
+	
+	-- Trinket Procs
+	Trinket = 0
+	
+	-- Tortos: Heroic
+	Rockfall = nil
+	
+	-- Mind Flay settings
+	flayTicks = 0
+	maxFlayTicks = 3
+	insanityTicks = 0
+	maxInsanityTicks = 3
+	
 	PQ_PriestLoaded = true
 	PQR_WriteToChat(&amp;quot;|cff91e782Hysteria Priest data is |cff82cee7Loaded!|cffffffff&amp;quot;)
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Pause Rotation</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_PauseRotation_enable then return false end
