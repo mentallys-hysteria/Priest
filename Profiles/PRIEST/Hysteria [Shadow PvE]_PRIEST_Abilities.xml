@@ -385,10 +385,11 @@ if not IsPlayerSpell(PQ_FDCL) then return false end
 if not smartCancel() then return false end
 
 -- Don&amp;apos;t cast under 2 stacks
-if not UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) then return false end
-
--- Cast Mind Spike
-if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then CastSpellByName(GetSpellInfo(PQ_MS),&amp;quot;target&amp;quot;) return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Spike (High)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MS = PQ_MS
+if UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) then
+	if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then
+		CastSpellByName(GetSpellInfo(PQ_MS),&amp;quot;target&amp;quot;) return true
+	end
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Spike (High)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MS = PQ_MS
 local PQ_SOD = PQ_SOD
 local PQ_FDCL = PQ_FDCL
 local TargetValidation = TargetValidation
@@ -400,10 +401,11 @@ if not IsPlayerSpell(PQ_FDCL) then return false end
 if not smartCancel() then return false end
 
 -- Don&amp;apos;t cast under 2 stacks
-if UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) and select(4,UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD)) &amp;lt; 2 then return false end
-
--- Cast Mind Spike
-if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then CastSpellByName(GetSpellInfo(PQ_MS),&amp;quot;target&amp;quot;) return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (Insanity)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MF = PQ_MF
+if UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD) and select(4,UnitBuffID(&amp;quot;player&amp;quot;,PQ_SOD)) &amp;gt; 1 then
+	if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then
+		CastSpellByName(GetSpellInfo(PQ_MS),&amp;quot;target&amp;quot;) return true
+	end
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Flay (Insanity)</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local PQ_MF = PQ_MF
 local PQ_DP = PQ_DP
 local PQ_SnI = PQ_SnI
 local Hysteria_Spells = Hysteria_Spell
