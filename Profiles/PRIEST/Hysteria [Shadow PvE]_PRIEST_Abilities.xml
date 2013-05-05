@@ -23,6 +23,13 @@ then
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Misc] Initialization</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>-------------------------------------------------------------------------------
 -- Variables &amp; Sanity checks
 -------------------------------------------------------------------------------
+-- PQInterface is an absolute requirement from now on.
+if not IsAddOnLoaded(&amp;quot;PQInterface&amp;quot;) then
+	PQR_WriteToChat(&amp;quot;|cffDC143CPQInterface is required to run this profile!|cffffffff&amp;quot;, &amp;quot;Warning&amp;quot;)
+	PQR_WriteToChat(&amp;quot;|cffDC143CThe profile has been stopped.|cffffffff&amp;quot;, &amp;quot;Warning&amp;quot;)
+	PQR_StopRotation()
+end
+
 -- Load LUA data files.
 if PQR_RotationStarted == true then
 	PQR_RotationStarted = false	
