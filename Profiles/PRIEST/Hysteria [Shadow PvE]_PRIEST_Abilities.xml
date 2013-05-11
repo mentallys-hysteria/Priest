@@ -203,12 +203,11 @@ if UnitPower(&amp;quot;player&amp;quot;,13) &amp;lt;= 2 then return false end
 -- Cast Devouring Plague
 if TargetValidation(&amp;quot;target&amp;quot;, PQ_DP) then
 	CastSpellByName(GetSpellInfo(PQ_DP),&amp;quot;target&amp;quot;) return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Racials</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local SCD = SCD
-local PQ_HasHero = PQ_HasHero
 local SpecialUnit = SpecialUnit
 local Hysteria_UnitInfo = Hysteria_UnitInfo
 
 -- Don&amp;apos;t use Racials if user tagged off automatic use
-if not PQI_MentallyShadow_AutoRacials_enable then return false end
+if not PQI_MentallyMage_AutoRacials_enable then return false end
 
 -- Don&amp;apos;t use outside of Combat
 if not UnitAffectingCombat(&amp;quot;player&amp;quot;) then return false end
@@ -859,17 +858,25 @@ if IsPlayerSpell(108921) and PQR_SpellAvailable(108921) then
 			if SpellIsTargeting() then SpellCancelQueuedSpell() CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
 			return true
 	end
-end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Frag Belt</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>local Belt = GetInventoryItemID(&amp;quot;player&amp;quot;, 6)
+end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Frag Belt</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>-- If we don&amp;apos;t know Engineering. Don&amp;apos;t activate.
+for i=1,9 do
+	if select(7,GetProfessionInfo(i)) == 202 then hasEngi = true end
+end
+
+local PQ_SWP = PQ_SWP
+local TargetValidation = TargetValidation
+local Belt = GetInventoryItemID(&amp;quot;player&amp;quot;, 6)
+
+if not hasEngi then return false end
+
+-- Don&amp;apos;t use outside of combat
+if not UnitAffectingCombat(&amp;quot;player&amp;quot;) then return false end
 
 -- Don&amp;apos;t use it if it&amp;apos;s on cooldown as well!
 if GetItemCooldown(Belt) &amp;gt; 0 then return false end
 
 -- Cast Frag Belt on target during Metamorphosis
-if GetShapeshiftForm(&amp;quot;player&amp;quot;) == 1
-	and GetCurrentKeyBoardFocus() == nil 
-	and UnitIsUnit(&amp;quot;target&amp;quot;, &amp;quot;mouseover&amp;quot;)
-then
-	SpellCancelQueuedSpell()
+if TargetValidation(PQ_SWP) then
 	UseItemByName(Belt)
 	if SpellIsTargeting() then CameraOrSelectOrMoveStart() CameraOrSelectOrMoveStop() end
 	return true
