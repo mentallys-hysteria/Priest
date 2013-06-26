@@ -124,6 +124,14 @@ if not PQ_PriestLoaded then
 	
 	PQ_PriestLoaded = true
 	PQR_WriteToChat(&amp;quot;|cff91e782Hysteria Priest data is |cff82cee7Loaded!|cffffffff&amp;quot;)
+end
+
+------------------------------------------------------------
+-- Misc. Checks
+------------------------
+-- Reset DoT Tracker if we&amp;apos;re not in combat
+if not UnitAffectingCombat(&amp;quot;player&amp;quot;) and #dotTracker &amp;gt; 0 then
+	dotTracker = {}
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Blast</Name><Default>false</Default><SpellID>0</SpellID><Actions>/use 13|/use 14|/use 10|/script UIErrorsFrame:Clear()</Actions><Lua>local PQ_MB = PQ_MB
 local SCD = SCD
 local PQ_DI = PQ_DI
@@ -575,11 +583,20 @@ local SpecialUnit = SpecialUnit
 -- Don&amp;apos;t use Potion during Heroism if user tagged off automatic use
 if not PQI_MentallyShadow_AutoPotion_enable then return false end
 
-if GetItemCount(76093,false,true) &amp;gt; 0
-	and GetItemCooldown(76093) == 0
-	and PQ_HasHero()
-	and SpecialUnit()
-then UseItemByName(76093) return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Vampiric Embrace</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_VampiricEmbrace_enable then return false end
+-- Disable if we have no potions left
+if GetItemCount(76093) &amp;lt; 1 then return false end
+
+-- Disable if Potion is on cooldown
+if GetItemCooldown(76093) ~= 0 then return false end
+
+-- Disable if we&amp;apos;re not targeting a boss
+if not SpecialUnit() then return false end
+
+-- Disable if we don&amp;apos;t have Heroism or T2D is greater than 20 seconds
+if not PQ_HasHero() or T2D(&amp;quot;target&amp;quot;) &amp;gt; 20 then return false end
+
+-- At this point, we should just use the potion if all of the above is true
+UseItemByName(76093)</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Vampiric Embrace</Name><Default>false</Default><SpellID>0</SpellID><Actions></Actions><Lua>if not PQI_MentallyShadow_VampiricEmbrace_enable then return false end
 
 if IsPlayerSpell(15286) and PQR_SpellAvailable(15286) then
 	if PQI:IsHotkeys(PQI_MentallyShadow_VampiricEmbrace_key)
