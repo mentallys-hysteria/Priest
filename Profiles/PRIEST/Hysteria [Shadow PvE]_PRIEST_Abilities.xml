@@ -122,16 +122,11 @@ if not PQ_PriestLoaded then
 	insanityTicks = 0
 	maxInsanityTicks = 3
 	
+	 -- Initalize the Dot Tracker
+  	dotTracker = {}
+	
 	PQ_PriestLoaded = true
 	PQR_WriteToChat(&amp;quot;|cff91e782Hysteria Priest data is |cff82cee7Loaded!|cffffffff&amp;quot;)
-end
-
-------------------------------------------------------------
--- Misc. Checks
-------------------------
--- Reset DoT Tracker if we&amp;apos;re not in combat
-if not UnitAffectingCombat(&amp;quot;player&amp;quot;) and #dotTracker &amp;gt; 0 then
-	dotTracker = {}
 end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>False</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Blast</Name><Default>false</Default><SpellID>0</SpellID><Actions>/use 13|/use 14|/use 10|/script UIErrorsFrame:Clear()</Actions><Lua>local PQ_MB = PQ_MB
 local SCD = SCD
 local PQ_DI = PQ_DI
