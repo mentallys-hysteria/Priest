@@ -210,7 +210,7 @@ local SpecialUnit = SpecialUnit
 local Hysteria_UnitInfo = Hysteria_UnitInfo
 
 -- Don&amp;apos;t use Racials if user tagged off automatic use
-if not PQI_MentallyMage_AutoRacials_enable then return false end
+if not PQI_MentallyShadow_AutoRacials_enable then return false end
 
 -- Don&amp;apos;t use outside of Combat
 if not UnitAffectingCombat(&amp;quot;player&amp;quot;) then return false end
