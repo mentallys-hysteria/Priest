@@ -15,8 +15,8 @@ if not dotTracker then dotTracker = {} end
 -- General Settings
 if not stopRotation then stopRotation = false end
 if not SCD then SCD = false end
-intBuffs = 0
-hasteBuffs = 0
+if not intBuffs then intBuffs = 0 end
+if not hasteBuffs then hasteBuffs = 0 end
 
 -- Aura Info function.
 buffs = {
@@ -38,7 +38,7 @@ masteryProcs = {104510}
 intellectProcs = {128985, 126577, 126478, 136082, 138898, 139133, 138786, 105702, 33702}
 
 -- Doom no-dot List
-disableDoomList = {69556,69553,69548,69492,69491,69480,69153,60885,68192,69050,70579,69069,69172,69184,69168,69013,69133,69462,63873,69232}
+disableDoomList = {69556,69553,69548,69492,69491,69480,69153,60885,68192,69050,70579,69069,69172,69184,69168,69013,69133,69462,63873,69232,72272}
 
 -- Calculate accumulated power of procs
 mentallyPower = nil
@@ -581,12 +581,12 @@ function HysteriaFrame_OnEvent(self,event,...)
 				-- Evocation somehow interrupted, or something, continue with the profile.
 				if spellID == PQ_Evo then invokeTimer = GetTime() end
 				
-				-- Trinket procs and other buffs
+				-- Did we get buffed?!
 				for i=1,#hasteProcs do
-					if UnitBuffID("player",hasteProcs[i]) then hasteBuffs = hasteBuffs - 1 end
+					if spellID == hasteProcs[i] then hasteBuffs = hasteBuffs - 1 end
 				end
 				for i=1,#intellectProcs do
-					if UnitBuffID("player",intellectProcs[i]) then intBuffs = intBuffs - 1 end
+					if spellID == intellectProcs[i] then intBuffs = intBuffs - 1 end
 				end
 			end
 		end
@@ -633,16 +633,12 @@ function HysteriaFrame_OnEvent(self,event,...)
 				-- Invoker's Energy applied
 				if spellID == PQ_InvoBuff then invokeTimer = false stopRotation = false end
 				
-				-- Trinket procs and other buffs
+				-- Did we get buffed?!
 				for i=1,#hasteProcs do
-					if UnitBuffID("player",hasteProcs[i]) then hasteBuffs = hasteBuffs + 1 end
+					if spellID == hasteProcs[i] then hasteBuffs = hasteBuffs + 1 end
 				end
 				for i=1,#intellectProcs do
-					if UnitBuffID("player",intellectProcs[i]) then
-						if UnitBuffID("player",138786) and select(4,UnitBuffID("player",138786)) >= 6 then
-							intBuffs = intBuffs + 1
-						else intBuffs = intBuffs + 1 end
-					end
+					if spellID == intellectProcs[i] then intBuffs = intBuffs + 1 end
 				end
 			end
 		end
@@ -726,14 +722,25 @@ function isMindControledUnit(unit)
 	if IsInRaid() then group = "raid"
 		elseif IsInGroup() then group = "party"
 	else return true end
+	
+	if UnitExists("target") then
+		local npcID = tonumber(UnitGUID("target"):sub(6,10), 16)
+	end
+	if UnitExists("mouseover") then
+		local npcID = tonumber(UnitGUID("mouseover"):sub(6,10), 16)
+	end
+	
+	-- Minion of Y'Shaarj needs to burn
+	if npcID == 72272 then return false end
 		
 	-- Stop dots on MCed raid members
 	for i=1,GetNumGroupMembers() do
 		local member = group..i
-		if not UnitCanAttack("player",unit) then return true
-		else
-			if UnitName(unit) == member then return false end
-		end
+		
+		if UnitCanAttack("player",unit) or UnitDebuffID(unit,145071) or UnitDebuffID(unit,145175) then
+			if UnitName(unit) == UnitName(member) then return false end
+		else return true end
+		
 		return true
 	end
 end
@@ -859,6 +866,9 @@ function PQ_PowerRound(num) return math.floor(num+.5) end
 -- Smart channel cancel Function
 smartCancel = nil
 function smartCancel()
+	-- Only enable for Priests
+	if select(2, UnitClass("player")) ~= "PRIEST" then return true end
+	
 	-- Don't cancel Mind Sear
 	if UnitChannelInfo("player") == GetSpellInfo(PQ_MSear) then return false end
 	
@@ -883,10 +893,14 @@ function smartCancel()
 	
 	-- Mind Flay Insanity failsafe.
 	if PQI_MentallyOffensiveSettings_MindFlayInsanity_enable then
-		if PQI_MentallyOffensiveSettings_MindFlayInsanity_value > 2 then
-			if UnitChannelInfo("player") == GetSpellInfo(PQ_MFI) and insanityTicks < maxInsanityTicks - 1 then return false end
+		if UnitSpellHaste("player")*425 > 15800 then
+			if UnitChannelInfo("player") == GetSpellInfo(PQ_MFI) then return false end
 		else
-			if UnitChannelInfo("player") == GetSpellInfo(PQ_MFI) and insanityTicks < PQI_MentallyOffensiveSettings_MindFlayInsanity_value then return false end
+			if PQI_MentallyOffensiveSettings_MindFlayInsanity_value > 2 then
+				if UnitChannelInfo("player") == GetSpellInfo(PQ_MFI) and insanityTicks < maxInsanityTicks - 1 then return false end
+			else
+				if UnitChannelInfo("player") == GetSpellInfo(PQ_MFI) and insanityTicks < PQI_MentallyOffensiveSettings_MindFlayInsanity_value then return false end
+			end
 		end
 	end
 	
@@ -967,15 +981,17 @@ function TargetValidation(unit, spell)
 		and UnitCanAttack("player", unit) == 1
 		and not UnitIsDeadOrGhost(unit)
 		and not PQR_IsOutOfSight(unit, 1) then
+			if not smartCancel() then return false end
+			
 			if IsSpellKnown(spell) then
 				if PQR_SpellAvailable(spell) then
 					if IsSpellInRange(GetSpellInfo(spell), unit) == 1 then return true else return false end
 				else
-					if spell == 8092 or spell == 32379 then
-						local spellCD = select(2,GetSpellCooldown(spell)) + GetSpellCooldown(spell) - GetTime()
-						if spellCD <= 0 then spellCD = 0 end
-						if spellCD <= 0.5 then return true end
-					end
+					--if spell == 8092 or spell == 32379 then
+					--	local spellCD = select(2,GetSpellCooldown(spell)) + GetSpellCooldown(spell) - GetTime()
+					--	if spellCD <= 0 then spellCD = 0 end
+					--	if spellCD <= 0.5 then return true end
+					--end
 					return false
 				end
 			else
@@ -1431,10 +1447,6 @@ elseif select(2, UnitClass("player")) == "PRIEST" then
 					tooltip	= "Allow spells and abilities to cancel Mind Flay (Insanity) after X ticks.",
 				},
 			},
-			{ 	name	= "Double Shadow Word Death",
-			    tooltip = "Toggle whether to double-tap Shadow Word: Death or just cast it once.",
-				enable	= true,
-			},
 		},
 		hotkeys = {
 			{	name	= "Mind Sear",
@@ -1486,6 +1498,7 @@ elseif select(2, UnitClass("player")) == "PRIEST" then
 	PQ_Spectral	= 112833		-- Spectral Guise
 	PQ_Scream	= 8122			-- Psychic Scream
 	PQ_Embrace	= 15286			-- Vampiric Embrace
+	PQ_Symbiosis=113277			-- Symbiosis: Tranquility
 	
 	-- Buffs
 	PQ_IF		= 588			-- Inner Fire
