@@ -246,7 +246,7 @@ if IsPlayerSpell(139139) then
 end
 
 -- Sanity Checks
-if not PQR_SpellAvailable(PQ_MS) then return false end
+--if not PQR_SpellAvailable(PQ_MS) then return false end
 if not surgeOfDarkness then return false end
 
 if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>Mind Spike (2)</Name><Default>false</Default><SpellID>73510</SpellID><Actions></Actions><Lua>local PQ_MS = PQ_MS
@@ -262,7 +262,7 @@ if IsPlayerSpell(139139) then
 end
 
 -- Sanity Checks
-if not PQR_SpellAvailable(PQ_MS) then return false end
+--if not PQR_SpellAvailable(PQ_MS) then return false end
 if not surgeOfDarkness or surgeOfDarkness &amp;lt; 2 then return false end
 
 if TargetValidation(&amp;quot;target&amp;quot;,PQ_MS) then return true end</Lua><RecastDelay>0</RecastDelay><Target>Target</Target><CancelChannel>True</CancelChannel><SkipUnknown>True</SkipUnknown></Ability><Ability><Name>[Support] Shadowfiend</Name><Default>false</Default><SpellID>34433</SpellID><Actions>/use 13|/use 14|/use 10|/script UIErrorsFrame:Clear()</Actions><Lua>local SCD = SCD
@@ -395,6 +395,8 @@ end</Lua><RecastDelay>0</RecastDelay><Target>Mouseover</Target><CancelChannel>Tr
 local PQ_Smite = 585
 local TargetValidation = TargetValidation
 local devouringPlague = select(7,UnitDebuffID(&amp;quot;target&amp;quot;,PQ_DP,&amp;quot;PLAYER&amp;quot;))
+
+if not IsPlayerSpell(139139) then return false end
 
 if PQR_IsMoving(0.1) then return false end
 if not PQR_SpellAvailable(PQ_MF) then return false end
