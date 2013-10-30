@@ -1,5 +1,5 @@
 ## Welcome
-Mentally's Shadow Priest Profile - 5.2 Ready!
+Mentally's Shadow Priest Profile - 5.4 Ready!
 The Shadow Priest profile is <b>100%</b> <i>customizable</i> and <i>user-friendly</i>!
 
 The Profile comes in 2 versions:
